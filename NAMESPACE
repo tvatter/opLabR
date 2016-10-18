@@ -1,0 +1,13 @@
+## Imports
+import(assertthat)
+importFrom(NMOF,cfBSM)
+importFrom(NMOF,cfMerton)
+importFrom(NMOF,cfBates)
+importFrom(NMOF,cfHeston)
+importFrom(NMOF,cfVG)
+
+## Functions
+export(logNormalCDF)
+export(carrMadanPut)
+export(CDF)
+
