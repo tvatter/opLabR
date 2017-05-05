@@ -1,5 +1,5 @@
 # Implementation of the log-normal model (fully analytic)
-logNormalCDF <- function(price = 100, cs = 50, sv = 30, 
+logNormalCDF <- function(price = 100, cs = 50, sv = 30,
                          cf = (price-cs)/(price-sv),
                          sigma = 0.8, tau = seq(0,1,1e-2)) {
 
@@ -55,7 +55,7 @@ putCF <- function(cf, S, X, tau, r, ...) {
   if (tau == 0) {
     max(X - S, 0)
   } else {
-    callCF(cf, S, X, tau, r, q = 0, ...) + X * exp(-r*tau) - S
+    callCF(cf, S, X, tau, r, ...) + X * exp(-r*tau) - S
   }
 }
 

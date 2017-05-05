@@ -2,7 +2,7 @@ Package: opLabR
 Type: Package
 Title: A collection of supply chain tools from the opLab at the University of Lausanne
 Version: 0.1.0
-Date: 2016-08-17
+Date: 2015-05-05
 Depends: assertthat, NMOF
 Author: Thibault Vatter <thibault.vatter@gmail.com>
 Maintainer: Thibault Vatter <thibault.vatter@gmail.com>
