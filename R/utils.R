@@ -60,13 +60,43 @@ putCF <- function(cf, S, X, tau, r, ...) {
 }
 
 # Compute the profit
-profit <- function(cf, Q, tau, r, p, cs, sv, ...) {
-  (p-cs) * Q - (p-sv) * putCF(cf, 1, Q, tau, r, ...)
+profit <- function(cf, Q, tau, r, p, cl, sv, ...) {
+  (p-cl) * Q - (p-sv) * putCF(cf, 1, Q, tau, r, ...)
 }
 
 # Compute the CDF by using either the Carr-Madan approach or the standard way of obtaining option prices
 CDF <- function(cf,  carrMadan = TRUE,
-                  r = 0, tau = seq(0,1,1e-2), p, cl, sv, ...) {
+                  r = 0, tau = seq(0,1,1e-2), p, cs, sv, ...) {
+
+  if (carrMadan == TRUE) {
+    puts <- carrMadanPut(cf, r = r, tau = tau, ...) # Compute the grid of options prices and quantities at each time-step
+    Q <- puts[,1]
+    P <- puts[,-1]
+  }
+
+  cl <- sapply(1:length(tau), function(i) {
+    pl <- function(cl) { # Max profit for a given cost long
+      if (carrMadan == TRUE) {
+        return(max((p-cl) * Q - (p-sv) * P[,i])) # Grid search with Carr-Madan
+      } else {
+        return(-optim(1, function(Q) # Brute force with standard approach
+          -profit(cf, Q, tau[i], r, p, cl, sv, ...),
+          method = "Brent", lower = 0, upper = 10)$value)
+      }
+    }
+    uniroot(function(cl) pl(cl)-(p-cs), interval = c(sv, p))$root
+  })
+
+  # Recover the cost short and the cdf
+  cdf <- (cs-cl)/cs
+  if (any(tau == 0)) {
+    cdf[tau == 0] <- 0
+  }
+  return(cdf)
+}
+
+CDF2 <- function(cf,  carrMadan = TRUE,
+                r = 0, tau = seq(0,1,1e-2), p, cl, sv, ...) {
 
   if (carrMadan == TRUE) {
     puts <- carrMadanPut(cf, r = r, tau = tau, ...) # Compute the grid of options prices and quantities at each time-step
